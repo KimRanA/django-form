@@ -1,11 +1,16 @@
+{% load bootstrap4 %}
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    {% bootstrap_css %}
     <title>Board</title>
 </head>
 <body>
-    {% block body %}
-    {% endblock %}
+    <div class = "container">
+        {% block body %}
+        {% endblock %}
+    </div>
+    {% bootstrap_javascript jquery='full' %}
 </body>
 </html>

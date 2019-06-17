@@ -29,10 +29,15 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+""
 INSTALLED_APPS = [
     # local apps
     'boards',
+
+    # 3rd party apps
+    'bootstrap4',
+
+    # django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

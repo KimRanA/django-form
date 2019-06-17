@@ -12,7 +12,8 @@ def index(request):
     context = {'boards': boards}
     return render(request, 'boards/index.html', context)
 
-@require_http_methods(['GET','POST'])
+
+@require_http_methods(['GET', 'POST'])
 def create(request):
     if request.method == 'POST':
         form = BoardForm(request.POST)
@@ -41,7 +42,7 @@ def delete(request, board_pk):
     return redirect('boards:index')
 
 
-@require_http_methods(['GET','POST'])
+@require_http_methods(['GET', 'POST'])
 def update(request, board_pk):
     board = get_object_or_404(Board, pk=board_pk)
     # POST boards/3/update/
