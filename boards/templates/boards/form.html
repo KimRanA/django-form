@@ -2,7 +2,11 @@
 
 <!-- GET /boards/create/ -->
 {% block body %}
+    {% if request.resolver_match.url_name == 'create' %}
     <h1>새로운 게시글 작성</h1>
+    {% else %} <!-- Update 가 들어오면 -->
+    <h1>게시글 수정</h1>
+    {% endif %}
     <!-- POST /boards/create/ -->
     <!-- <form action="{% url 'boards:create' %}" method="post"> -->
     <!-- 인데 동일한 요청이므로 action을 비워도 된다. -->
@@ -13,4 +17,9 @@
         <input type="submit" value="작성하기">
 
     </form>
+    {% if request.resolver_match.url_name == 'create' %}
+    <a href="{% url 'boards:index' %}">[뒤로가기]</a>
+    {% else %}
+    <a href="{% url 'boards:Detail' board_pk %}">[뒤로가기]</a>
+    {% endif %}
 {% endblock %}

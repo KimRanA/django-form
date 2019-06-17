@@ -53,5 +53,8 @@ def update(request, board_pk):
     # GET boards/3/update
     else:
         form = BoardForm(instance=board)  # board 데이터 할당
-    context = {'form': form}
+    context = {
+        'form': form,
+        'board_pk': board_pk,
+    }
     return render(request, 'boards/form.html', context)
