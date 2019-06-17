@@ -8,10 +8,8 @@
     <!-- 인데 동일한 요청이므로 action을 비워도 된다. -->
     <form action="" method="post">
         {% csrf_token %}
-        <table for="title">Title</table><br />
-        <input type="text" id="title" name="title" /><br />
-        <table for="content">Content</table><br />
-        <textarea name="content" id="content"></textarea><br />
+        {{ form.as_p }}
+
         <input type="submit" value="작성하기">
 
     </form>
