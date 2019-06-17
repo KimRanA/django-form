@@ -1,0 +1,16 @@
+{% extends 'boards/base.html' %}
+
+{% block body %}
+<h1>게시글 목록</h1>
+<a href = "#">[게시글 작성]</a> <--샵은 아직 아무것도 하지 않겠다.-->
+<hr />
+{% for board in boards %}
+    <-- 1. 첫번째 글 -->
+    <p>{{board.pk}}. {{board.title}}</p>
+    <a href = "#">[글 상세보기]</a>
+    <hr />
+{% empty %}
+    <p><strong>아직 작성된 글이 없습니다.</strong></p>
+{% endfor %}
+
+{% endblock %}
