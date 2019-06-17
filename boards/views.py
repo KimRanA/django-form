@@ -17,9 +17,7 @@ def create(request):
     if request.method == 'POST':
         form = BoardForm(request.POST)
         if form.is_valid():
-            title = form.cleaned_data.get('title')
-            content = form.cleaned_data.get('content')
-            board = Board.objects.create(title=title, content=content)
+            board = form.save()
             return redirect('boards:detail', board.pk)
     else:
         form = BoardForm()
@@ -48,14 +46,12 @@ def update(request, board_pk):
     board = get_object_or_404(Board, pk=board_pk)
     # POST boards/3/update/
     if request.method == 'POST':
-        form = BoardForm(request.POST)
+        form = BoardForm(request.POST, instance=board)
         if form.is_valid():
-            board.title = form.cleaned_data.get('title')
-            board.content = form.cleaned_data.get('content')
-            board.save()
+            board = form.save()
             return redirect('boards:detail', board.pk)
     # GET boards/3/update
     else:
-        form = BoardForm(initial=board.__dict__)  # board 데이터 할당
+        form = BoardForm(instance=board)  # board 데이터 할당
     context = {'form': form}
     return render(request, 'boards/form.html', context)
