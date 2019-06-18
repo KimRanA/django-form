@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+# 이건 반드시 로그인이 필요함. login_required 로그인 필수 설정
 from .forms import CustomUserChangeForm
+from django.views.decorators.http import require_POST, require_GET, require_http_methods
 
 
+@require_http_methods(['GET', 'POST'])
 def signup(request):
     if request.user.is_authenticated:
         # 로그인 되어 있을 때, signup 과 login 불가 하도록 boards 로 리턴
@@ -22,7 +26,7 @@ def signup(request):
     context = {'form': form}
     return render(request, 'accounts/signup.html', context)
 
-
+@require_http_methods(['GET', 'POST'])
 def login(request):
     if request.user.is_authenticated:
         return redirect('boards:index')
@@ -33,18 +37,22 @@ def login(request):
         if form.is_valid():
             # 로그인
             auth_login(request, form.get_user())
-            return redirect('boards:index')
-            pass
+            return redirect(request.GET.get('next') or 'boards:index')
     else:  # GET accounts/login/ ->html 페이지만 렌더링
         form = AuthenticationForm()
     context = {'form': form}
     return render(request, 'accounts/login.html', context)
 
+
+@require_http_methods(['GET', 'POST'])
 def logout(request):
     # 로그아웃 로직
     auth_logout(request)
     return redirect('boards:index')
 
+
+@login_required
+@require_http_methods(['GET', 'POST'])
 def update(request):
     if not request.user.is_authenticated:
         # 로그인이 되어있지 않은데, update 페이지로 가려한다면 main 페이지로 보낸다.
@@ -68,6 +76,8 @@ def update(request):
     return render(request, 'accounts/update.html', context)
 
 
+@login_required
+@require_http_methods(['GET', 'POST'])
 def change_password(request):
     if request.method == 'POST':
         # 비밀번호 변경로직
@@ -84,3 +94,10 @@ def change_password(request):
     # 왜 두줄을 땡겨? 입력했던 정보를 가져오기 위해서
     context = {'form': form}
     return render(request, 'accounts/change_password.html', context)
+
+
+@require_http_methods(['POST'])
+def delete(request):
+    # 유저 삭제 로직
+    request.user.delete()
+    return redirect('boards:index')
