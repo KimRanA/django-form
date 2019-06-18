@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # local apps
     'boards',
+    'accounts',
 
     # 3rd party apps
     'bootstrap4',
