@@ -7,6 +7,7 @@
             <a class="nav-link" href="{% url 'accounts:logout' %}">로그아웃</a>
             <a class="nav-link" href="{% url 'accounts:update' %}">마이페이지</a>
         </li>
+
     {% endif %}
     {% if user.is_authenticated == False %}
       <li class="nav-item">

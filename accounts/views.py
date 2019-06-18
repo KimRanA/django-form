@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
-from django.contrib.auth import login as auth_login, logout as auth_logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
 from .forms import CustomUserChangeForm
 
 
@@ -46,6 +46,9 @@ def logout(request):
     return redirect('boards:index')
 
 def update(request):
+    if not request.user.is_authenticated:
+        # 로그인이 되어있지 않은데, update 페이지로 가려한다면 main 페이지로 보낸다.
+        return redirect('boards:index')
     if request.method == 'POST':
         # 업데이트 로직 수행
         form = CustomUserChangeForm(request.POST, instance=request.user)
@@ -63,3 +66,21 @@ def update(request):
 
     context = {'form': form}
     return render(request, 'accounts/update.html', context)
+
+
+def change_password(request):
+    if request.method == 'POST':
+        # 비밀번호 변경로직
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():  # 유효성 검사
+            form.save()
+            # 세션의 정보와 회원의 정보가 달라져서
+            # 세션을 유지한 상태로 새롭게 업데이트
+            update_session_auth_hash(request, request.user)
+            return redirect('boards:index')
+        pass
+    else:
+        form = PasswordChangeForm(request.user)
+    # 왜 두줄을 땡겨? 입력했던 정보를 가져오기 위해서
+    context = {'form': form}
+    return render(request, 'accounts/change_password.html', context)
