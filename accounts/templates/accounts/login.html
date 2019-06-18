@@ -1,0 +1,11 @@
+{% extends 'boards/base.html' %}
+{% load bootstrap4 %}
+
+{% block body %}
+<h1>로그인</h1>
+<form action="" method="post">
+    {% csrf_token %} <!--보안상의 이유로 필요함-->
+    {% bootstrap_form form %}
+    {% buttons submit="로그인" reset="Cancel" %}{% endbuttons %}
+</form>
+{% endblock %}

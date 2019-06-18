@@ -49,6 +49,7 @@ def update(request, board_pk):
     if request.method == 'POST':
         form = BoardForm(request.POST, instance=board)
         if form.is_valid():
+
             board = form.save()
             return redirect('boards:detail', board.pk)
     # GET boards/3/update
