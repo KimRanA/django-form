@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
+from .forms import CustomUserChangeForm
+
 
 def signup(request):
     if request.user.is_authenticated:
@@ -42,3 +44,22 @@ def logout(request):
     # 로그아웃 로직
     auth_logout(request)
     return redirect('boards:index')
+
+def update(request):
+    if request.method == 'POST':
+        # 업데이트 로직 수행
+        form = CustomUserChangeForm(request.POST, instance=request.user)
+        # UserChangeForm 으로 사용자가 보낸 정보를 받아옴.
+        # 원하는 정보만 사용할 수 있도록 forms.py를 생성하고,
+        # UserChangeForm 은 CustomUserChangeForm 로 변경함.
+        if form.is_valid():
+            form.save()
+            return redirect('boards:index')
+    else:
+        form = CustomUserChangeForm(instance=request.user)
+        # request.user = 지금 로그인해 있는 유저 정보
+        # 원하는 정보만 사용할 수 있도록 forms.py를 생성하고,
+        # UserChangeForm 은 CustomUserChangeForm 로 변경함.
+
+    context = {'form': form}
+    return render(request, 'accounts/update.html', context)
