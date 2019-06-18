@@ -2,12 +2,20 @@
 
 {% block body %}
 <ul class="nav justify-content-end">
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'accounts:login' %}">로그인</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'accounts:signup' %}">회원가입</a>
-  </li>
+    {% if user.is_authenticated %}
+        <li class = "nav-item">
+            <a class="nav-link" href="{% url 'accounts:logout' %}">로그아웃</a>
+        </li>
+    {% endif %}
+    {% if user.is_authenticated == False %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'accounts:login' %}">로그인</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'accounts:signup' %}">회원가입</a>
+      </li>
+    {% endif %}
 </ul>
 
 
@@ -16,8 +24,11 @@
     {% if user.is_authenticated %}
 <!--    <h3>{{ user.is_authenticated }}</h3>-->
         <h3>{{ user.username }}님 안녕하세요.</h3>
-    {% endif %}}
-    <a href = "{% url 'boards:create' %}">[게시글 작성]</a> <!--샵은 아직 아무것도 하지 않겠다.-->
+        <a href = "{% url 'boards:create' %}">[게시글 작성]</a> <!--샵은 아직 아무것도 하지 않겠다.-->
+    {% else %}
+    <p><br>새 글을 쓰려면 <a href = "{% url 'accounts:login' %}">로그인</a> 하세요!</p>
+    {% endif %}
+
 
 </div>
 
