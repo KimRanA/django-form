@@ -13,8 +13,14 @@
     <h4>Comments</h4>
     {% for comment in comments %}
     <div>
-        <strong>{{ comment.user }}</strong>
-        <span class="m1-3">{{ comment.content }}</span>
+            <strong>{{ comment.user }}</strong>
+            <span class="m1-3">{{ comment.content }}</span>
+            {% if user == comment.user %} <!--댓글을 쓴 유저일 때만 삭제가능.-->
+                <form class="d-inline ml-4" action="{% url 'boards:comments_delete' board.pk comment.pk %}" method="post">
+                    {% csrf_token %} <!--post 밑엔 반드시 붙인다.-->
+                    <input class="btn btn-link text-danger" type="submit" type="submit" value="삭제">
+                </form>
+            {% endif %}
     </div>
 
     {% empty %}}
@@ -35,6 +41,7 @@
     {% if user.is_authenticated %} <!-- 요청을 보내는 유저가 게시글의 유저일때만 -->
     <form action="{% url 'boards:delete' board.pk %}" method="post">
         {% csrf_token %}
+        {% bootstrap_form comment_form %}
         <input class = "btn btn-danger" type="submit" value="삭제하기" />
     </form>
         <a class = "btn btn-warning" href="{% url 'boards:update' board.pk %}">[수정하기]</a>

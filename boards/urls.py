@@ -15,6 +15,6 @@ urlpatterns = [
 
     # comments
     # POST /boards/3/comments/
-    path('<int:board_pk>/comments/', views.comments_create, name='comments_create')
-
+    path('<int:board_pk>/comments/', views.comments_create, name='comments_create'),
+    path('<int:board_pk>/comments/<int:comment_pk>/delete/', views.comments_delete, name='comments_delete'),
 ]

@@ -99,3 +99,13 @@ def comments_create(request, board_pk):
         comment.board_id = board_pk
         comment.save()  # 저장한다.
     return redirect('boards:detail', board_pk)
+
+
+@require_POST
+def comments_delete(request, board_pk, comment_pk):
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    if comment.user == request.user:
+        comment.delete()
+    return redirect('boards:detail', board_pk)
+
+
