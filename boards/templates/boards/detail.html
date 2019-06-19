@@ -5,14 +5,16 @@
     <hr />
     <p>글 번호 : {{ board.pk }}</p>
     <p>글 제목 : {{ board.title }}</p>
+    <p>글 작성자 : {{ board.user.username }}</p>
     <p>글 내용 : {{ board.content}}</p>
     <p>글 생성시간 : {{ board.created_at }}</p>
     <p>글 수정시간 : {{ board.updated_at}}</p>
     <hr />
+    {% if user.is_authenticated %} <!-- 요청을 보내는 유저가 게시글의 유저일때만 -->
     <form action="{% url 'boards:delete' board.pk %}" method="post">
         {% csrf_token %}
-        <input type="submit" value="삭제하기" />
+        <input class = "btn btn-danger" type="submit" value="삭제하기" />
     </form>
-    <a href="{% url 'boards:update' board.pk %}">[수정하기]</a>
-    <a href="{% url 'boards:index' %}">[뒤로가기]</a>
+    <a class = "btn btn-warning" href="{% url 'boards:update' board.pk %}">[수정하기]</a>
+    <a class = "btn btn-secondary" href="{% url 'boards:index' %}">[뒤로가기]</a>
 {% endblock %}

@@ -24,7 +24,7 @@ def create(request):
         if form.is_valid():
             board = form.save(commit=False)
             board.user = request.user
-            board.save()
+            board.save()  # 저장한다.
             return redirect('boards:detail', board.pk)
     else:
         form = BoardForm()
@@ -40,12 +40,15 @@ def detail(request, board_pk):
     return render(request, 'boards/detail.html', context)
 
 
-# GET boards/3/delete/
+# POST boards/3/delete/
 @require_POST
 def delete(request, board_pk):
     # 특정 보드를 불러와서 삭제한다.
     board = get_object_or_404(Board, pk=board_pk)
-    board.id()
+    # 요청을 보낸 유저와 게시글의 작성자가 같을 때만 삭제
+    if request.user == board.user:
+        return redirect('boards:detail', board_pk)
+    board.delete()
     return redirect('boards:index')
 
 
@@ -53,12 +56,15 @@ def delete(request, board_pk):
 @require_http_methods(['GET', 'POST'])
 def update(request, board_pk):
     board = get_object_or_404(Board, pk=board_pk)
+    if request.user != board.user:
+        return redirect('boards:detail', board_pk)
     # POST boards/3/update/
     if request.method == 'POST':
         form = BoardForm(request.POST, instance=board)
         if form.is_valid():
-
-            board = form.save()
+            board = form.save(commit=False)  # 바로 저장하지 않고
+            board.user = request.user  # 유저값을 대입한 뒤
+            board = form.save()  # 저장한다.
             return redirect('boards:detail', board.pk)
     # GET boards/3/update
     else:
