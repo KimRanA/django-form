@@ -13,4 +13,8 @@ urlpatterns = [
     path('<int:board_pk>/delete/', views.delete, name='delete'),
     path('<int:board_pk>/update/', views.update, name='update'),
 
+    # comments
+    # POST /boards/3/comments/
+    path('<int:board_pk>/comments/', views.comments_create, name='comments_create')
+
 ]

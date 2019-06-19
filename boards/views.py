@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Board
-from .forms import BoardForm
+from .models import Board, Comment
+from .forms import BoardForm, CommentForm
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
 from django.contrib.auth.decorators import login_required
 
@@ -11,7 +11,10 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     boards = Board.objects.order_by('-pk')
     # 역순으로 가장 처음 만든 것이 가장 최근으로 나옴.
-    context = {'boards': boards}
+
+    context = {
+        'boards': boards,
+        }
     return render(request, 'boards/index.html', context)
 
 
@@ -36,7 +39,14 @@ def create(request):
 @require_GET
 def detail(request, board_pk):
     board = get_object_or_404(Board, pk=board_pk)
-    context = {'board': board}
+#    Comment.objects.all()  # 모든 댓글이 꺼내지게 됨.
+    comments = board.comment_set.order_by('-pk')
+    comment_form = CommentForm()
+    context = {
+        'board': board,
+        'comment_form': comment_form,
+        'comments': comments,
+        }
     return render(request, 'boards/detail.html', context)
 
 
@@ -74,3 +84,18 @@ def update(request, board_pk):
         'board_pk': board_pk,
     }
     return render(request, 'boards/form.html', context)
+
+
+@require_POST
+def comments_create(request, board_pk):
+    if not request.user.is_authenticated:
+        return redirect('account')
+    # 댓글 작성 로직
+    comment_form = CommentForm(request.POST)
+    # 유효성 검사
+    if comment_form.is_valid():
+        comment = comment_form.save(commit=False)
+        comment.user = request.user
+        comment.board_id = board_pk
+        comment.save()  # 저장한다.
+    return redirect('boards:detail', board_pk)

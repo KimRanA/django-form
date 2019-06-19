@@ -11,4 +11,5 @@ class BoardAdmin(admin.ModelAdmin):  # admin.ModelAdmin을 상속하겠다.
 
 @admin.register(Comment)
 class CommentsAdmin(admin.ModelAdmin):
-    list_display = ('content', )
+    list_display = ('pk', 'content', 'created_at', )
+    readonly_fields = ['created_at', ]
