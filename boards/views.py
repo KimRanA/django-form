@@ -109,3 +109,23 @@ def comments_delete(request, board_pk, comment_pk):
     return redirect('boards:detail', board_pk)
 
 
+def like(request, board_pk):
+    board = get_object_or_404(Board, pk=board_pk)
+    user = request.user
+
+    # 보드를 좋아요 누른 모든 사람 중에서 user 가 없다면
+    # 좋아요
+    # 아니라면
+    # 좋아요 취소
+    # if request.user != board.like_users:
+    #     user.like_boards.add(board)
+    # else:
+    #     user.like_boards.remove(board)
+
+    if user in board.like_users.all():
+        board.like_users.remove(user)
+    else:
+        user.like_boards.add(board)
+
+
+    return redirect('boards:detail', board_pk)
