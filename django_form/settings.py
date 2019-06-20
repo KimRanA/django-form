@@ -28,8 +28,15 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # # `allauth` specific authentication methods, such as login by e-mail
+    # 'allauth.account.auth_backends.AuthenticationBackend',
+)
 # Application definition
-""
+
 INSTALLED_APPS = [
     # local apps
     'boards',
@@ -37,6 +44,10 @@ INSTALLED_APPS = [
 
     # 3rd party apps
     'bootstrap4',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.kakao',
 
     # django apps
     'django.contrib.admin',
@@ -45,7 +56,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -130,3 +144,6 @@ STATIC_URL = '/static/'
 
 # settings.AUTH_USER_MODEL
 AUTH_USER_MODEL = 'accounts.User'
+
+
+LOGIN_REDIRECT_URL = 'boards:index'
