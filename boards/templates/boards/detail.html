@@ -3,9 +3,10 @@
 {% block body %}
     <h1>Detail</h1>
     <hr />
+    {% include 'boards/_profile.html' %}
     <p>글 번호 : {{ board.pk }}</p>
     <p>글 제목 : {{ board.title }}</p>
-    <p>글 작성자 : {{ board.user.username }}</p>
+<!--    <p>글 작성자 : {{ board.user.username }}</p>-->
     <p>글 내용 : {{ board.content}}</p>
     <p>글 생성시간 : {{ board.created_at }}</p>
     <p>글 수정시간 : {{ board.updated_at}}</p>
@@ -31,7 +32,7 @@
             {% endif %}
     </div>
 
-    {% empty %}}
+    {% empty %}
     <p>아직 댓글이 없습니다.</p>
     {% endfor %}
 

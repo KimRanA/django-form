@@ -3,6 +3,7 @@ from .models import Board, Comment
 from .forms import BoardForm, CommentForm
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 
 
 # Board 의 리스트
@@ -42,10 +43,12 @@ def detail(request, board_pk):
 #    Comment.objects.all()  # 모든 댓글이 꺼내지게 됨.
     comments = board.comment_set.order_by('-pk')
     comment_form = CommentForm()
+    person = get_object_or_404(get_user_model(), pk=board.user_id)
     context = {
         'board': board,
         'comment_form': comment_form,
         'comments': comments,
+        'person': person,
         }
     return render(request, 'boards/detail.html', context)
 
@@ -109,6 +112,7 @@ def comments_delete(request, board_pk, comment_pk):
     return redirect('boards:detail', board_pk)
 
 
+@login_required()
 def like(request, board_pk):
     board = get_object_or_404(Board, pk=board_pk)
     user = request.user
@@ -126,6 +130,21 @@ def like(request, board_pk):
         board.like_users.remove(user)
     else:
         user.like_boards.add(board)
+    return redirect('boards:detail', board_pk)
 
 
+@login_required()
+def follow(request, board_pk, user_pk):
+    # 팔로우 기능을 구현
+    user = request.user
+    person = get_object_or_404(get_user_model(), pk=user_pk)  # user_pk 유저
+
+    # person 의 팔로워 목록에 user 가 없다면 추가하기
+    # 그렇지 않고 팔로워 목록에 user 가 이미 존재한다면 제거하기
+    # 만약에 user == person 이면 if문 안거치고 바로 리다이렉트
+    if user != person:
+        if user in person.followers.all():
+            person.followers.remove(user)
+        else:
+            person.followers.add(user)
     return redirect('boards:detail', board_pk)

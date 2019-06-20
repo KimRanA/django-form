@@ -101,3 +101,6 @@ def delete(request):
     # 유저 삭제 로직
     request.user.delete()
     return redirect('boards:index')
+
+
+
