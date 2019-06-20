@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import login as auth_login, logout as auth_logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 # 이건 반드시 로그인이 필요함. login_required 로그인 필수 설정
-from .forms import CustomUserChangeForm
+from .forms import CustomUserChangeForm, CustomUserCreationForm
 from django.views.decorators.http import require_POST, require_GET, require_http_methods
 
 
@@ -15,14 +15,14 @@ def signup(request):
 
     if request.method == 'POST':
         # 사용자 회원가입 로직
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         # 사용자가 건네주는 모든 정보를 form 에 담아서 보관하겠다.
         if form.is_valid():  # 회원가입시 바로 로그인되서 boards 페이지
             user = form.save()
             auth_login(request, user)
             return redirect('boards:index')
     else:  # GET accounts/signup/
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     context = {'form': form}
     return render(request, 'accounts/signup.html', context)
 
